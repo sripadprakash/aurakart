@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Tom",
+    "email": "tom@gmail.com",
+    "password": "12345",
+    "location": "Manhattan, New York",
+    "wishlist": [],
+    "orders": [
+      {
+        "id": "ORD-9921",
+        "date": "2024-03-01",
+        "total": 1299.99,
+        "status": "Delivered",
+        "items": 1
+      },
+      {
+        "id": "ORD-8842",
+        "date": "2024-02-15",
+        "total": 349.99,
+        "status": "Processing",
+        "items": 1
+      }
+    ],
+    "cart": [
+      {
+        "id": "audio-pro-1",
+        "name": "Next-Gen Audio Experience Pro",
+        "price": 299.99,
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop",
+        "quantity": 1
+      },
+      {
+        "id": "smart-watch-1",
+        "name": "Aura Series 9 Premium Smartwatch",
+        "price": 349.99,
+        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Viki",
+    "email": "viki@gmail.com",
+    "password": "12345",
+    "location": "Dubai, UAE",
+    "wishlist": [
+      {
+        "id": "audio-pro-1",
+        "name": "Next-Gen Audio Experience Pro",
+        "price": 299.99,
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop"
+      },
+      {
+        "id": "camera-1",
+        "name": "AuraFocus Z9 Mirrorless Digital Camera",
+        "price": 1299.99,
+        "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop"
+      }
+    ],
+    "orders": [
+      {
+        "id": "ORD-5716",
+        "date": "2026-03-10",
+        "status": "Processing",
+        "total": 89.99,
+        "items": 2,
+        "productName": "Urban Streetwear Collection"
+      }
+    ],
+    "cart": [
+      {
+        "id": "streetwear-1",
+        "name": "Premium Urban Streetwear Collection",
+        "price": 89.99,
+        "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2070&auto=format&fit=crop",
+        "offer": "BOGO",
+        "quantity": 2
+      },
+      {
+        "id": "audio-pro-1",
+        "name": "Next-Gen Audio Experience Pro",
+        "price": 299.99,
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop",
+        "quantity": 1
+      },
+      {
+        "id": "smart-home-1",
+        "name": "Aura Home Pro - Smart Assistant",
+        "price": 149.99,
+        "image": "https://images.unsplash.com/photo-1558089687-f282ffcbc126?q=80&w=2000&auto=format&fit=crop",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Ray",
+    "email": "ray@gmail.com",
+    "password": "12345",
+    "location": "London, UK",
+    "wishlist": [
+      {
+        "id": "phone-pro-1",
+        "name": "AuraPhone Pro Max 5G",
+        "price": 899,
+        "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400"
+      }
+    ],
+    "orders": [
+      {
+        "id": "ORD-1234",
+        "date": "2024-03-05",
+        "total": 299.99,
+        "status": "Delivered",
+        "items": 1
+      }
+    ],
+    "cart": [
+      {
+        "id": "sneakers-future-1",
+        "name": "AuraGlide Boost Sneakers",
+        "price": 189.99,
+        "image": "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=400",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Niki",
+    "email": "niki@gmail.com",
+    "password": "12345",
+    "location": "Los Angeles, CA",
+    "wishlist": [
+      {
+        "id": "sneakers-future-1",
+        "name": "AuraGlide Boost Sneakers",
+        "price": 189.99,
+        "image": "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=2000&auto=format&fit=crop"
+      }
+    ],
+    "orders": [
+      {
+        "id": "ORD-4855",
+        "date": "2026-03-10",
+        "status": "Processing",
+        "total": 89.99,
+        "items": 2,
+        "productName": "Urban Streetwear Collection"
+      }
+    ],
+    "cart": [
+      {
+        "id": "sneakers-future-1",
+        "name": "AuraGlide Boost Sneakers",
+        "price": 189.99,
+        "image": "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=2000&auto=format&fit=crop",
+        "quantity": 1
+      },
+      {
+        "id": "phone-pro-1",
+        "name": "AuraPhone Pro Max 5G (Red, 12GB RAM, 256GB)",
+        "price": 899,
+        "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400",
+        "quantity": 1
+      }
+    ]
+  }
+]
