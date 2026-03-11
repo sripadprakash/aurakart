@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('aura_users', JSON.stringify(registeredUsers));
 
     // 2. Server Sync (Save to users.json file)
-    fetch('http://localhost:5000/api/users/save', {
+    fetch('https://aurakart-mi9p.onrender.com/api/users/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registeredUsers),
@@ -89,9 +89,10 @@ export const AuthProvider = ({ children }) => {
 
   // Load latest users from Server on start
   useEffect(() => {
-    fetch('http://localhost:5000/api/users')
+    fetch('https://aurakart-mi9p.onrender.com/api/users')
     .then(res => res.json())
     .then(serverUsers => {
+// ... (the rest of your code stays exactly the same)
       if (serverUsers && serverUsers.length > 0) {
         setRegisteredUsers(prev => {
           // Merge logic: prioritize server data but keep existing ones
