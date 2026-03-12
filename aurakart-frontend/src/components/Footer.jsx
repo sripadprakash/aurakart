@@ -1,92 +1,9 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiSend, FiMail, FiCode, FiAtSign, FiChevronUp } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { FiSend, FiMail, FiAtSign } from 'react-icons/fi';
 import { FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-const ContactWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const contacts = [
-    {
-      name: 'Gmail',
-      icon: <FiAtSign size={20} />,
-      link: 'mailto:sripadprakash@gmail.com',
-      color: 'hover:bg-red-500',
-      glow: 'shadow-red-500/20'
-    },
-    {
-      name: 'LinkedIn',
-      icon: <FaLinkedin size={20} />,
-      link: 'https://www.linkedin.com/in/sripadprakash/',
-      color: 'hover:bg-blue-600',
-      glow: 'shadow-blue-600/20'
-    },
-    {
-      name: 'WhatsApp',
-      icon: <FaWhatsapp size={20} />,
-      link: 'https://wa.me/qr/E7776I4S6MGWF1',
-      color: 'hover:bg-green-500',
-      glow: 'shadow-green-500/20'
-    }
-  ];
-
-  return (
-    <div className="relative">
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className={`px-6 py-3 rounded-2xl flex items-center gap-3 transition-all duration-500 shadow-2xl border group ${
-          isOpen 
-            ? 'bg-white text-black border-white shadow-white/10' 
-            : 'bg-white/5 border-white/10 text-white hover:border-blue-500/50 hover:bg-blue-500/10'
-        }`}
-      >
-        <FiCode size={20} className={isOpen ? 'text-black' : 'text-blue-400 group-hover:text-blue-300'} />
-        <span className="text-[11px] font-black uppercase tracking-[0.2em]">Click here to get in touch</span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          className="ml-1"
-        >
-          <FiChevronUp size={16} className={isOpen ? 'text-black' : 'text-gray-400'} />
-        </motion.div>
-      </motion.button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 flex gap-3">
-            {contacts.map((contact, idx) => (
-              <motion.a
-                key={contact.name}
-                href={contact.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 15, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 15, scale: 0.8 }}
-                transition={{ 
-                  delay: idx * 0.05, 
-                  type: 'spring', 
-                  stiffness: 400, 
-                  damping: 25 
-                }}
-                whileHover={{ y: -4, scale: 1.05 }}
-                className={`w-12 h-12 rounded-xl flex items-center justify-center bg-[#020617] border border-white/10 text-white transition-all duration-300 shadow-xl ${contact.color} ${contact.glow} group/item relative`}
-              >
-                {contact.icon}
-                <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded-md opacity-0 group-hover/item:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-gray-200 shadow-sm">
-                  {contact.name}
-                </span>
-              </motion.a>
-            ))}
-          </div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
 
 const Footer = () => {
   const { setIsAuthModalOpen } = useAuth();
@@ -271,13 +188,51 @@ const Footer = () => {
           </div>
 
           <div className="border-t border-white/5 pt-10 flex flex-col items-center gap-6">
-            <div className="flex flex-col items-center gap-4 group">
-              <p className="text-[13px] font-black text-gray-300 uppercase tracking-[0.2em] transition-colors group-hover:text-blue-400 text-center">
-                Website designed and built by Mr. Sripad Prakash.
+            <div className="flex flex-col items-center gap-6 group">
+              <p className="text-[13px] font-black text-gray-300 uppercase tracking-[0.2em] transition-colors group-hover:text-blue-400 text-center max-w-2xl leading-relaxed">
+                Website designed and built by Mr. Sripad Prakash <br className="hidden sm:block" />
+                Get in touch using the options below
               </p>
 
-              <div className="relative flex flex-col items-center">
-                <ContactWidget />
+              <div className="flex gap-4">
+                {[
+                  { 
+                    name: 'Gmail', 
+                    icon: <FiAtSign size={20} />, 
+                    link: 'mailto:sripadprakash@gmail.com',
+                    color: 'hover:bg-red-500',
+                    glow: 'shadow-red-500/20'
+                  },
+                  { 
+                    name: 'LinkedIn', 
+                    icon: <FaLinkedin size={20} />, 
+                    link: 'https://www.linkedin.com/in/sripadprakash/',
+                    color: 'hover:bg-blue-600',
+                    glow: 'shadow-blue-600/20'
+                  },
+                  { 
+                    name: 'WhatsApp', 
+                    icon: <FaWhatsapp size={20} />, 
+                    link: 'https://wa.me/qr/E7776I4S6MGWF1',
+                    color: 'hover:bg-green-500',
+                    glow: 'shadow-green-500/20'
+                  }
+                ].map((contact, idx) => (
+                  <motion.a
+                    key={contact.name}
+                    href={contact.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -5, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center bg-white/5 border border-white/10 text-white transition-all duration-300 shadow-xl ${contact.color} ${contact.glow} group/item relative`}
+                  >
+                    {contact.icon}
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded-md opacity-0 group-hover/item:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-gray-200 shadow-sm">
+                      {contact.name}
+                    </span>
+                  </motion.a>
+                ))}
               </div>
             </div>
 

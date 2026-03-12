@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  /* Removed scroll-behavior: smooth to prevent unwanted animations on page navigation */
-}
+
 
 html.lenis, html.lenis body {
   height: auto;

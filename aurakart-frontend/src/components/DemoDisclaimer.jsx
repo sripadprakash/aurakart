@@ -113,7 +113,7 @@ const DemoDisclaimer = ({ onAccept }) => {
                     <FiMessageSquare className="text-purple-400" size={20} />
                   </div>
                   <p className="text-gray-300 text-sm">
-                    <strong className="text-white">Feedback & Future Projects:</strong> I would love to hear your thoughts. Please share your feedback—what you liked or what could be improved. For real inquiries or future project discussions, you can contact me through the <span className="text-blue-400">“Click here to get in touch”</span> option on the last page.
+                    <strong className="text-white">Feedback & Future Projects:</strong> I would love to hear your thoughts. Please share your feedback—what you liked or what could be improved. For real inquiries or future project discussions, you can contact me through the <span className="text-blue-400">“Get in touch using the options below”</span> section on the last page.
                   </p>
                 </div>
                 
