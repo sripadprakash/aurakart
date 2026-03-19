@@ -117,7 +117,7 @@ const Navbar = () => {
               <img 
                 src={logo} 
                 alt="Aurakart Logo" 
-                className={`transition-all duration-300 ease-in-out object-contain ${isScrolled ? 'h-7 md:h-8' : 'h-8 md:h-11'}`} 
+                className={`transition-all duration-300 ease-in-out object-contain drop-shadow-[0_0_1px_rgba(255,255,255,0.8)] ${isScrolled ? 'h-7 md:h-8' : 'h-8 md:h-11'}`} 
               />
             </div>
 
@@ -288,7 +288,7 @@ const Navbar = () => {
               className="fixed inset-0 w-full h-screen bg-white z-[70] shadow-2xl flex flex-col"
             >
               <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <img src={logo} alt="Logo" className="h-8 object-contain" />
+                <img src={logo} alt="Logo" className="h-8 object-contain drop-shadow-[0_0_1px_rgba(255,255,255,0.8)]" />
                 <button 
                   onClick={() => setIsMobileMenuOpen(false)} 
                   className="p-3 -mr-2 text-gray-400 hover:text-gray-900 active:bg-gray-100 rounded-full transition-colors"
