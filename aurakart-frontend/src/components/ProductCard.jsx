@@ -84,113 +84,113 @@ const ProductCard = ({ product }) => {
   if (product.id === 'furn-lamp-1') productLink = '/product/furn-lamp-1';
 
   return (
-    <Link to={productLink} className="block group">
-      <div className="relative bg-gradient-to-b from-white/10 to-transparent backdrop-blur-xl border border-white/10 rounded-[2rem] p-4 flex flex-col gap-4 transition-all duration-500 group-hover:border-orange-500/40 group-hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] group-hover:-translate-y-2">
-        
-        {/* --- TOP SECTION: Image & Badges --- */}
-        <div className="w-full h-56 bg-[#020617]/50 rounded-2xl overflow-hidden relative">
-          
-          {/* Sale Badge */}
-          <div className="absolute top-3 left-3 z-20">
-            <span className="bg-gradient-to-r from-brand-pink to-brand-orange text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full tracking-widest uppercase shadow-lg">
-              Save 20%
-            </span>
-          </div>
+    <div className="relative bg-gradient-to-b from-white/10 to-transparent backdrop-blur-xl border border-white/10 rounded-[2rem] p-4 flex flex-col gap-4 transition-all duration-500 group group-hover:border-orange-500/40 group-hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] group-hover:-translate-y-2">
+      
+      {/* --- TOP SECTION: Image & Badges --- */}
+      <Link to={productLink} className="relative w-full h-56 bg-[#020617]/50 rounded-2xl overflow-hidden block">
+        {/* Sale Badge */}
+        <div className="absolute top-3 left-3 z-10">
+          <span className="bg-gradient-to-r from-brand-pink to-brand-orange text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full tracking-widest uppercase shadow-lg">
+            Save 20%
+          </span>
+        </div>
 
-          {/* Wishlist Button (Glassmorphism) */}
+        {/* Product Image with Hover Zoom */}
+        <img 
+          src={product.image} 
+          alt={product.name} 
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+        />
+        
+        {/* Dark overlay at the bottom of the image for better blending */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      </Link>
+
+      {/* Floating Wishlist Button (Over the Image Area) */}
+      <button 
+        onClick={handleWishlistClick}
+        className={`absolute top-7 right-7 z-20 backdrop-blur-md p-2.5 rounded-full transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.2)] 
+          ${isWishlisted ? 'bg-white text-red-500 scale-110' : 'bg-white/20 text-white hover:bg-white/40'}
+        `}
+      >
+        <FiHeart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />
+      </button>
+
+      {/* --- MIDDLE SECTION: Details --- */}
+      <Link to={productLink} className="flex flex-col gap-2 flex-grow px-2">
+        {/* Star Rating */}
+        <div className="flex items-center gap-1.5 mt-1">
+          <div className="flex text-yellow-400 text-xs">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+          </div>
+          <span className="text-gray-400 text-xs font-medium">({rating}) {reviews} Reviews</span>
+        </div>
+
+        {/* Title - Fixed height for consistency */}
+        <div className="h-14">
+          <h3 className="text-lg font-bold text-white line-clamp-2 leading-tight tracking-wide group-hover:text-orange-400 transition-colors">
+            {product.name}
+          </h3>
+        </div>
+
+        {/* Description - Fixed height for consistency */}
+        <div className="h-8">
+          <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
+            {product.description}
+          </p>
+        </div>
+        
+        {/* Pricing */}
+        <div className="flex items-center gap-2 mt-auto pt-2">
+          <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-400">
+            ${product.price}
+          </p>
+          <p className="text-sm text-gray-500 font-semibold line-through">
+            ${oldPrice}
+          </p>
+        </div>
+      </Link>
+      
+      {/* --- BOTTOM SECTION: Add to Cart Button --- */}
+      <div className="mt-2 px-2 pb-2">
+        {product.badge === "Out of Stock" ? (
           <button 
-            onClick={handleWishlistClick}
-            className={`absolute top-3 right-3 z-20 backdrop-blur-md p-2.5 rounded-full transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.2)] 
-              ${isWishlisted ? 'bg-white text-red-500 scale-110' : 'bg-white/20 text-white hover:bg-white/40'}
-            `}
+            className="w-full bg-white/5 border border-white/10 text-gray-500 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] cursor-not-allowed flex items-center justify-center gap-2"
+            disabled
           >
-            <FiHeart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />
+            <FiSlash />
+            Out of Stock
           </button>
-
-          {/* Product Image with Hover Zoom */}
-          <img 
-            src={product.image} 
-            alt={product.name} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-          />
-          
-          {/* Dark overlay at the bottom of the image for better blending */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        </div>
-        
-        {/* --- MIDDLE SECTION: Details --- */}
-        <div className="flex flex-col gap-2 flex-grow px-2">
-          
-          {/* Star Rating */}
-          <div className="flex items-center gap-1.5 mt-1">
-            <div className="flex text-yellow-400 text-xs">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-            </div>
-            <span className="text-gray-400 text-xs font-medium">({rating}) {reviews} Reviews</span>
-          </div>
-
-          {/* Title - Fixed height for consistency */}
-          <div className="h-14">
-            <h3 className="text-lg font-bold text-white line-clamp-2 leading-tight tracking-wide group-hover:text-orange-400 transition-colors">
-              {product.name}
-            </h3>
-          </div>
-
-          {/* Description - Fixed height for consistency */}
-          <div className="h-8">
-            <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
-              {product.description}
-            </p>
-          </div>
-          
-          {/* Pricing */}
-          <div className="flex items-center gap-2 mt-auto pt-2">
-            <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-400">
-              ${product.price}
-            </p>
-            <p className="text-sm text-gray-500 font-semibold line-through">
-              ${oldPrice}
-            </p>
-          </div>
-        </div>
-        
-        {/* --- BOTTOM SECTION: Add to Cart Button --- */}
-        <div className="mt-2" onClick={(e) => e.preventDefault()}>
-          {product.badge === "Out of Stock" ? (
-            <button 
-              className="w-full bg-white/5 border border-white/10 text-gray-500 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] cursor-not-allowed flex items-center justify-center gap-2"
-              disabled
-            >
-              <FiSlash />
-              Out of Stock
-            </button>
-          ) : (
-            <button 
-              onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-              className="cart-btn !bg-[#f97316]" 
-              data-tooltip="Add to your"
-            >
-              <div className="cart-btn-wrapper">
-                <div className="text uppercase tracking-wider text-xs font-bold">
-                  Add to Cart
-                </div>
-                <span className="icon flex-col gap-0.5">
-                  <svg viewBox="0 0 16 16" className="bi bi-cart2 drop-shadow-md" fill="currentColor" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
-                  </svg>
-                  <span className="text-[8px] uppercase font-black tracking-tighter leading-none">BASKET</span>
-                </span>
+        ) : (
+          <button 
+            onClick={(e) => { 
+              e.preventDefault(); 
+              e.stopPropagation(); 
+              addToCart(product); 
+              toast.success('Added to basket!');
+            }}
+            className="cart-btn !bg-[#f97316] relative z-20" 
+            data-tooltip="Add to your"
+          >
+            <div className="cart-btn-wrapper">
+              <div className="text uppercase tracking-wider text-xs font-bold">
+                Add to Cart
               </div>
-            </button>
-          )}
-        </div>
-
+              <span className="icon flex-col gap-0.5">
+                <svg viewBox="0 0 16 16" className="bi bi-cart2 drop-shadow-md" fill="currentColor" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
+                </svg>
+                <span className="text-[8px] uppercase font-black tracking-tighter leading-none">BASKET</span>
+              </span>
+            </div>
+          </button>
+        )}
       </div>
-    </Link>
+    </div>
   );
 };
 

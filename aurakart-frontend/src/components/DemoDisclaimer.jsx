@@ -7,6 +7,26 @@ const DemoDisclaimer = ({ onAccept }) => {
   const [isLocked, setIsLocked] = useState(true);
   const scrollRef = useRef(null);
 
+  // Robust check for scrollability and initial state
+  useEffect(() => {
+    const checkScrollable = () => {
+      if (scrollRef.current) {
+        const { scrollHeight, clientHeight } = scrollRef.current;
+        // If content fits without scrolling, unlock it
+        if (scrollHeight <= clientHeight + 10) {
+          setIsLocked(false);
+        }
+      }
+    };
+
+    const timer = setTimeout(checkScrollable, 500);
+    window.addEventListener('resize', checkScrollable);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkScrollable);
+    };
+  }, []);
+
   const handleAccept = () => {
     if (isLocked) return;
     
@@ -32,8 +52,12 @@ const DemoDisclaimer = ({ onAccept }) => {
 
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    // Check if user has reached the bottom (with a small 5px buffer for rounding)
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 5;
+    
+    // Check if content is actually scrollable
+    if (scrollHeight <= clientHeight + 10) return;
+
+    // Standard scroll-to-bottom logic with more generous buffer for tablets/subpixels
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 15;
     
     if (isAtBottom) {
       setIsLocked(false);
@@ -49,7 +73,7 @@ const DemoDisclaimer = ({ onAccept }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center bg-[#020617]/80 backdrop-blur-xl px-4 py-8 md:py-12 overflow-y-auto"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020617]/80 backdrop-blur-xl px-4 py-6 overflow-hidden"
         >
           <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-[35rem] h-[35rem] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -59,12 +83,17 @@ const DemoDisclaimer = ({ onAccept }) => {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 20, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-2xl bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl flex flex-col max-h-[90vh]"
+            className="relative w-full max-w-2xl bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl flex flex-col max-h-[85vh]"
           >
             <div 
               ref={scrollRef}
               onScroll={handleScroll}
-              className="overflow-y-auto custom-scrollbar pr-2 scroll-smooth"
+              className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-2 scroll-smooth"
+              data-lenis-prevent
+              style={{ 
+                touchAction: 'pan-y',
+                WebkitOverflowScrolling: 'touch' 
+              }}
             >
               <div className="text-center mb-8">
                 <motion.div
@@ -143,7 +172,13 @@ const DemoDisclaimer = ({ onAccept }) => {
                 <span className="relative z-10">
                   {isLocked ? 'Locked (Scroll to Unlock)' : 'Accept & Enter Website'}
                 </span>
-                {isLocked ? <FiLock className="relative z-10" /> : <FiUnlock className="relative z-10 animate-pulse" />}
+                <div className="relative z-10 flex items-center justify-center transition-all duration-300">
+                  {isLocked ? (
+                    <FiLock size={18} />
+                  ) : (
+                    <FiUnlock size={22} className="text-green-400 group-hover:text-white transition-colors" />
+                  )}
+                </div>
                 {!isLocked && (
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 )}

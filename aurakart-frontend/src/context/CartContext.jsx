@@ -10,14 +10,37 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // RESTORE CART ON LOGIN
+  // RESTORE AND MERGE CART ON LOGIN
   useEffect(() => {
     if (user) {
-      setCartItems(user.cart || []);
+      // Merge current local (guest) cart with the user's saved cart
+      const guestItems = [...cartItems];
+      const savedItems = user.cart || [];
+      
+      let mergedItems = [...savedItems];
+      
+      guestItems.forEach(gItem => {
+        const existingIdx = mergedItems.findIndex(sItem => sItem.id === gItem.id);
+        if (existingIdx > -1) {
+          mergedItems[existingIdx] = { 
+            ...mergedItems[existingIdx], 
+            quantity: mergedItems[existingIdx].quantity + gItem.quantity 
+          };
+        } else {
+          mergedItems.push(gItem);
+        }
+      });
+
+      setCartItems(mergedItems);
+      // Sync merged result back to user profile if there was a change
+      if (guestItems.length > 0) {
+        syncUserChanges({ cart: mergedItems });
+      }
     } else {
+      // On logout, we might want to clear or keep. Usually clear is safer for privacy.
       setCartItems([]);
     }
-  }, [user]);
+  }, [user?.email]); // Only trigger when the actual user identity changes
 
   // SYNC CART CHANGES TO USER PROFILE
   const syncCart = (newItems) => {

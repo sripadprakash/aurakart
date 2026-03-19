@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FiMapPin, FiSearch, FiArrowRight, FiTag, FiShoppingBag, FiX, FiMenu, FiChevronRight } from 'react-icons/fi';
+import { FiMapPin, FiSearch, FiArrowRight, FiTag, FiShoppingBag, FiX, FiMenu, FiChevronRight, FiRefreshCw } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/logo.png';
 import { MdAccountCircle, MdOutlineShoppingCart } from 'react-icons/md';
@@ -57,6 +57,16 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isMobileMenuOpen]);
+
   const handleResultClick = (path) => {
     setSearchQuery('');
     setShowResults(false);
@@ -107,7 +117,7 @@ const Navbar = () => {
               <img 
                 src={logo} 
                 alt="Aurakart Logo" 
-                className={`transition-all duration-300 ease-in-out object-contain mix-blend-darken ${isScrolled ? 'h-7 md:h-8' : 'h-8 md:h-11'}`} 
+                className={`transition-all duration-300 ease-in-out object-contain ${isScrolled ? 'h-7 md:h-8' : 'h-8 md:h-11'}`} 
               />
             </div>
 
@@ -271,30 +281,36 @@ const Navbar = () => {
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
             />
             <motion.div 
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
+              initial={{ y: '-100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-white z-[70] shadow-2xl flex flex-col"
+              className="fixed inset-0 w-full h-screen bg-white z-[70] shadow-2xl flex flex-col"
             >
               <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <img src={logo} alt="Logo" className="h-8 object-contain mix-blend-darken" />
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-400 hover:text-gray-900">
-                  <FiX size={24} />
+                <img src={logo} alt="Logo" className="h-8 object-contain" />
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="p-3 -mr-2 text-gray-400 hover:text-gray-900 active:bg-gray-100 rounded-full transition-colors"
+                >
+                  <FiX size={28} />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-8">
+              <div 
+                className="flex-1 overflow-y-auto p-6 space-y-8 pb-10"
+                data-lenis-prevent
+              >
                 {/* Delivery Location Mobile */}
                 <div 
                   onClick={() => { setIsLocationModalOpen(true); setIsMobileMenuOpen(false); }}
-                  className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100 active:bg-gray-100 transition-colors"
+                  className="flex items-center gap-4 bg-gray-50 p-5 rounded-2xl border border-gray-100 active:bg-gray-100 transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                    <FiMapPin size={20} />
+                  <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                    <FiMapPin size={24} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Delivering to</span>
+                    <span className="text-[10px] uppercase tracking-wider text-gray-500 font-black">Delivering to</span>
                     <span className="text-sm font-bold text-gray-900">{deliveryLocation}</span>
                   </div>
                 </div>
@@ -302,12 +318,12 @@ const Navbar = () => {
                 {/* Categories */}
                 <div>
                   <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 ml-1">Explore Categories</h4>
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-1 gap-1">
                     {categories.map(cat => (
                       <button 
                         key={cat.id}
                         onClick={() => handleResultClick(`/category/${cat.name.toLowerCase()}`)}
-                        className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-orange-50 transition-all group"
+                        className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-orange-50 active:bg-orange-100 transition-all group"
                       >
                         <div className="flex items-center gap-4">
                           <span className="text-2xl">{cat.icon}</span>
@@ -319,11 +335,33 @@ const Navbar = () => {
                   </div>
                 </div>
 
+                {/* Quick Links */}
+                <div>
+                  <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 ml-1">Quick Links</h4>
+                  <div className="grid grid-cols-1 gap-2">
+                    {[
+                      { name: 'Flash Deals', path: '/deals', icon: <FiTag className="text-pink-500" /> },
+                      { name: 'Help Center', path: '/help-support', icon: <FiSearch className="text-blue-500" /> },
+                      { name: 'Returns Centre', path: '/returns-centre', icon: <FiRefreshCw className="text-cyan-500" /> }
+                    ].map((link, idx) => (
+                      <Link 
+                        key={idx}
+                        to={link.path}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors"
+                      >
+                        <span className="text-lg">{link.icon}</span>
+                        <span className="text-sm font-bold text-gray-700">{link.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Collections Link */}
                 <Link 
                   to="/collections" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full text-center p-4 rounded-2xl bg-gray-900 text-white font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition-colors"
+                  className="block w-full text-center p-5 rounded-2xl bg-gray-900 text-white font-black uppercase tracking-widest text-xs hover:bg-gray-800 active:scale-95 transition-all shadow-xl shadow-gray-900/20"
                 >
                   Shop All Collections
                 </Link>
