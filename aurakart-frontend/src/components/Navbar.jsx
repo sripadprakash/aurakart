@@ -17,12 +17,22 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const searchRef = useRef(null);
+  const searchInputRef = useRef(null);
   
   const location = useLocation();
   const navigate = useNavigate();
   const { cartCount = 0, setIsCartOpen } = useCart() || {};
   const { location: deliveryLocation = 'Select Location', setIsLocationModalOpen } = useAppLocation() || {};
   const { user, setIsAuthModalOpen } = useAuth() || {};
+
+  // Focus search input when it becomes visible on mobile
+  useEffect(() => {
+    if (isSearchVisible && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current.focus();
+      }, 100);
+    }
+  }, [isSearchVisible]);
 
   // SEARCH LOGIC
   useEffect(() => {
@@ -136,20 +146,21 @@ const Navbar = () => {
           </div>
 
           {/* SEARCH ENGINE BAR - Desktop & Mobile Toggle */}
-          <div className={`flex-1 ${isSearchVisible ? 'flex absolute inset-x-0 top-0 h-full bg-white z-50 px-4 items-center gap-3' : 'hidden lg:flex'} max-w-2xl relative group`} ref={searchRef}>
+          <div className={`flex-1 ${isSearchVisible ? 'flex absolute inset-x-0 top-0 h-full bg-white z-50 px-4 items-center gap-3' : 'hidden lg:flex relative'} max-w-2xl group`} ref={searchRef}>
             <div className="relative w-full">
               <input 
+                ref={searchInputRef}
                 type="text" 
                 placeholder="Search for tech, fashion..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.trim().length > 1 && setShowResults(true)}
-                className={`w-full rounded-full pl-6 pr-16 text-sm text-gray-900 placeholder-gray-500 outline-none transition-all duration-400 ease-in-out bg-white border border-gray-300 shadow-inner hover:border-orange-500 focus:border-orange-500 ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                className={`w-full rounded-full pl-6 pr-28 text-sm text-gray-900 placeholder-gray-500 outline-none transition-all duration-400 ease-in-out bg-white border border-gray-300 shadow-inner hover:border-orange-500 focus:border-orange-500 ${isScrolled ? 'py-2' : 'py-2.5'}`}
               />
               {searchQuery && (
                 <button 
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-14 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-20 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   <FiX size={16} />
                 </button>

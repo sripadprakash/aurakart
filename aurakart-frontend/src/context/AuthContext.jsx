@@ -1,8 +1,14 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -58,12 +64,15 @@ export const AuthProvider = ({ children }) => {
       const saved = localStorage.getItem('aura_users');
       if (saved && saved !== 'undefined') {
         const parsed = JSON.parse(saved);
-        seedUsers.forEach(seedUser => {
-          if (!parsed.some(u => u.email.toLowerCase() === seedUser.email.toLowerCase())) {
-            parsed.push(seedUser);
-          }
-        });
-        return parsed;
+        if (Array.isArray(parsed)) {
+          const merged = [...parsed];
+          seedUsers.forEach(seedUser => {
+            if (!merged.some(u => u.email.toLowerCase() === seedUser.email.toLowerCase())) {
+              merged.push(seedUser);
+            }
+          });
+          return merged;
+        }
       }
     } catch (e) {
       console.error('Failed to parse users:', e);
@@ -74,49 +83,54 @@ export const AuthProvider = ({ children }) => {
 
   // Sync users to LocalStorage and BACKEND
   useEffect(() => {
-    // 1. Local Browser Sync
     localStorage.setItem('aura_users', JSON.stringify(registeredUsers));
 
-    // 2. Server Sync (Save to users.json file)
-    fetch('https://aurakart-mi9p.onrender.com/api/users/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(registeredUsers),
-    })
-    .then(res => res.json())
-    .catch(err => console.error('Backend sync failed. Make sure your server is running:', err));
+    const syncWithBackend = async () => {
+      try {
+        await fetch('https://aurakart-mi9p.onrender.com/api/users/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registeredUsers),
+        });
+      } catch (err) {
+        console.warn('Backend sync failed. Make sure your server is running.');
+      }
+    };
+
+    const timer = setTimeout(syncWithBackend, 1000); // Debounce sync
+    return () => clearTimeout(timer);
   }, [registeredUsers]);
 
   // Load latest users from Server on start
   useEffect(() => {
-    fetch('https://aurakart-mi9p.onrender.com/api/users')
-    .then(res => res.json())
-    .then(serverUsers => {
-// ... (the rest of your code stays exactly the same)
-      if (serverUsers && serverUsers.length > 0) {
-        setRegisteredUsers(prev => {
-          // Merge logic: prioritize server data but keep existing ones
-          const merged = [...prev];
-          serverUsers.forEach(su => {
-            if (!merged.some(u => u.email.toLowerCase() === su.email.toLowerCase())) {
-              merged.push(su);
-            }
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('https://aurakart-mi9p.onrender.com/api/users');
+        const serverUsers = await res.json();
+        if (serverUsers && Array.isArray(serverUsers)) {
+          setRegisteredUsers(prev => {
+            const merged = [...prev];
+            serverUsers.forEach(su => {
+              if (!merged.some(u => u.email.toLowerCase() === su.email.toLowerCase())) {
+                merged.push(su);
+              }
+            });
+            return merged;
           });
-          return merged;
-        });
+        }
+      } catch (err) {
+        console.warn('Could not fetch from server, using local data only.');
       }
-    })
-    .catch(err => console.warn('Could not fetch from server, using local data only.'));
+    };
+    fetchUsers();
   }, []);
 
-  // Sync current user's changes back to the main database
-  const syncUserChanges = (updates) => {
-    if (!user) return;
+  const syncUserChanges = useCallback((updates) => {
     setRegisteredUsers(prev => prev.map(u => 
-      u.email === user.email ? { ...u, ...updates } : u
+      u.email === user?.email ? { ...u, ...updates } : u
     ));
-    setUser(prev => ({ ...prev, ...updates }));
-  };
+    setUser(prev => prev ? { ...prev, ...updates } : null);
+  }, [user?.email]);
 
   const login = (email, password) => {
     const foundUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
@@ -147,7 +161,7 @@ export const AuthProvider = ({ children }) => {
       orders: [],
       cart: [] 
     };
-    setRegisteredUsers([...registeredUsers, newUser]);
+    setRegisteredUsers(prev => [...prev, newUser]);
     return { success: true };
   };
 

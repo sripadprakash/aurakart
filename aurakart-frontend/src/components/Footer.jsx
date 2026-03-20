@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiSend, FiMail, FiAtSign } from 'react-icons/fi';
-import { FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { FiX, FiShield, FiEye, FiLock, FiSettings, FiFileText, FiMail, FiSend, FiAtSign } from 'react-icons/fi';
+import { FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => {
   const { setIsAuthModalOpen } = useAuth();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [email, setEmail] = useState('');
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,11 +31,17 @@ const Footer = () => {
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (email) {
-      // Mock subscribe logic
       alert('Thank you for subscribing!');
       setEmail('');
     }
   };
+
+  const privacySections = [
+    { icon: <FiEye className="text-blue-400" />, title: "Data Collection", content: "We collect basic info like name and email for the simulation." },
+    { icon: <FiShield className="text-indigo-400" />, title: "Usage", content: "Data is used strictly for platform demonstration purposes." },
+    { icon: <FiLock className="text-purple-400" />, title: "Security", content: "Industry-standard measures protect this demo environment." },
+    { icon: <FiSettings className="text-cyan-400" />, title: "Cookies", content: "Local storage is used to remember your session preferences." }
+  ];
 
   return (
     <>
@@ -87,22 +94,30 @@ const Footer = () => {
                     </button>
                   </div>
                 </form>
-                <p className="mt-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest text-center lg:text-left">
-                  By subscribing, you agree to our <a href="#" className="text-blue-400 hover:underline">Privacy Policy</a>
-                </p>
+                <div className="mt-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest text-center lg:text-left leading-none flex items-baseline justify-center lg:justify-start gap-1">
+                  <span>By subscribing, you agree to our</span>
+                  <button 
+                    onClick={() => setIsPrivacyModalOpen(true)} 
+                    className="text-blue-400 hover:underline transition-all p-0 m-0 border-none bg-transparent leading-none h-auto inline transform translate-y-[-1px]"
+                  >
+                    Privacy Policy
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16 items-start">
             <div className="flex flex-col">
               <h4 className="text-white font-black mb-8 text-xs uppercase tracking-[0.3em] leading-none opacity-50">Office Address</h4>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                <span className="font-bold text-gray-200 block mb-2 text-lg">Aurakart Inc.</span>
-                350 Fifth Avenue, Suite 6200<br/>
-                New York, NY 10118<br/>
-                United States
-              </p>
+              <div className="space-y-4">
+                <span className="font-bold text-gray-200 block text-lg tracking-tight">Aurakart Inc.</span>
+                <p className="text-sm text-gray-400 leading-relaxed font-bold">
+                  350 Fifth Avenue, Suite 6200<br/>
+                  New York, NY 10118<br/>
+                  United States
+                </p>
+              </div>
             </div>
 
             {[
@@ -253,6 +268,70 @@ const Footer = () => {
           </svg>
         </button>
       )}
+      <AnimatePresence>
+        {isPrivacyModalOpen && (
+          <div className="fixed inset-0 z-[150] flex items-start justify-center p-4 pt-24 pb-10">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsPrivacyModalOpen(false)}
+              className="absolute inset-0 bg-[#020617]/90 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-[#0f172a] border border-white/10 w-[95%] md:w-full max-w-2xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col max-h-full"
+            >
+              <div className="p-5 md:p-8 border-b border-white/5 flex justify-between items-center bg-white/5 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">
+                    <FiShield size={20} />
+                  </div>
+                  <h2 className="text-lg md:text-xl font-black text-white uppercase tracking-widest">Privacy Policy</h2>
+                </div>
+                <button 
+                  onClick={() => setIsPrivacyModalOpen(false)} 
+                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all text-white border border-white/5"
+                >
+                  <FiX size={20} />
+                </button>
+              </div>
+
+              <div 
+                className="p-6 md:p-10 overflow-y-auto custom-scrollbar scroll-smooth"
+                data-lenis-prevent
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 mb-10">
+                  {privacySections.map((section, idx) => (
+                    <div key={idx} className="bg-white/5 p-5 md:p-8 rounded-2xl border border-white/5 flex flex-col group hover:bg-white/[0.08] transition-colors duration-300">
+                      <div className="text-3xl mb-4 transform group-hover:scale-110 transition-transform duration-300">{section.icon}</div>
+                      <h3 className="text-sm font-black text-white uppercase tracking-wider mb-2">{section.title}</h3>
+                      <p className="text-[11px] md:text-xs text-gray-400 leading-relaxed font-medium">{section.content}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-[#020617] p-6 md:p-8 rounded-2xl border border-white/5 mb-4">
+                  <div className="flex items-center gap-3 mb-4">
+                    <FiFileText className="text-blue-400" />
+                    <h4 className="text-xs font-black text-white uppercase tracking-widest">Project Intent</h4>
+                  </div>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    This website is a <strong className="text-white">Project Presentation</strong>. All data entered is used solely to demonstrate features and is not used for real-world commercial purposes. We do not store or process real financial data.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-6 bg-white/5 border-t border-white/5 text-center">
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em]">© 2026 Aurakart. Crafted for excellence.</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

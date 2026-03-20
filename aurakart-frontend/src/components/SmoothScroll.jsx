@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Lenis from "lenis";
 
 const SmoothScroll = ({ children }) => {
   const { pathname } = useLocation();
+  const lenisRef = useRef(null);
 
   useEffect(() => {
-    // Initialize Lenis for modern, professional smooth scrolling
+    // Initialize Lenis once
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // standard expo out easing
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
@@ -19,6 +20,8 @@ const SmoothScroll = ({ children }) => {
       infinite: false,
     });
 
+    lenisRef.current = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -26,12 +29,18 @@ const SmoothScroll = ({ children }) => {
 
     requestAnimationFrame(raf);
 
-    // Ensure page starts at top on route change
-    lenis.scrollTo(0, { immediate: true });
-
     return () => {
       lenis.destroy();
+      lenisRef.current = null;
     };
+  }, []);
+
+  useEffect(() => {
+    // Ensure page starts at top on route change
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    }
+    window.scrollTo(0, 0);
   }, [pathname]);
 
   return <>{children}</>;

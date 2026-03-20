@@ -11,18 +11,27 @@ const DemoDisclaimer = ({ onAccept }) => {
   useEffect(() => {
     const checkScrollable = () => {
       if (scrollRef.current) {
-        const { scrollHeight, clientHeight } = scrollRef.current;
-        // If content fits without scrolling, unlock it
-        if (scrollHeight <= clientHeight + 10) {
+        const { scrollHeight, clientHeight, scrollTop } = scrollRef.current;
+        // If content fits without scrolling OR we are already at the bottom
+        const isActuallyScrollable = scrollHeight > clientHeight + 10;
+        const isAlreadyAtBottom = scrollTop + clientHeight >= scrollHeight - 20;
+
+        if (!isActuallyScrollable || isAlreadyAtBottom) {
           setIsLocked(false);
         }
       }
     };
 
-    const timer = setTimeout(checkScrollable, 500);
+    // Check multiple times to ensure layout has settled
+    const timer1 = setTimeout(checkScrollable, 100);
+    const timer2 = setTimeout(checkScrollable, 500);
+    const timer3 = setTimeout(checkScrollable, 1000);
+    
     window.addEventListener('resize', checkScrollable);
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
       window.removeEventListener('resize', checkScrollable);
     };
   }, []);
@@ -31,19 +40,22 @@ const DemoDisclaimer = ({ onAccept }) => {
     if (isLocked) return;
     
     // -- VISIT TRACKING LOGIC --
-    const visitData = {
-      id: Date.now(),
-      event: 'DISCLAIMER_ACCEPTED',
-      timestamp: new Date().toLocaleString(),
-      userAgent: navigator.userAgent,
-      platform: navigator.platform
-    };
-    
-    const existingLogs = JSON.parse(localStorage.getItem('aurakart_logs') || '[]');
-    existingLogs.push(visitData);
-    localStorage.setItem('aurakart_logs', JSON.stringify(existingLogs));
-    
-    console.log('New Visit Recorded:', visitData);
+    try {
+      const visitData = {
+        id: Date.now(),
+        event: 'DISCLAIMER_ACCEPTED',
+        timestamp: new Date().toLocaleString(),
+        userAgent: navigator.userAgent,
+        platform: navigator.platform
+      };
+      
+      const existingLogs = JSON.parse(localStorage.getItem('aurakart_logs') || '[]');
+      existingLogs.push(visitData);
+      localStorage.setItem('aurakart_logs', JSON.stringify(existingLogs));
+      console.log('New Visit Recorded:', visitData);
+    } catch (e) {
+      console.warn('Could not save visit log:', e);
+    }
     // ---------------------------
 
     setIsVisible(false);
@@ -54,10 +66,15 @@ const DemoDisclaimer = ({ onAccept }) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     
     // Check if content is actually scrollable
-    if (scrollHeight <= clientHeight + 10) return;
+    const isActuallyScrollable = scrollHeight > clientHeight + 10;
+    
+    if (!isActuallyScrollable) {
+      setIsLocked(false);
+      return;
+    }
 
-    // Standard scroll-to-bottom logic with more generous buffer for tablets/subpixels
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 15;
+    // Dynamic lock/unlock: Only unlock when at the very bottom (with small buffer)
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20;
     
     if (isAtBottom) {
       setIsLocked(false);
@@ -73,17 +90,18 @@ const DemoDisclaimer = ({ onAccept }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020617]/80 backdrop-blur-xl px-4 py-6 overflow-hidden"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020617] md:bg-[#020617]/90 backdrop-blur-xl px-4 py-6 overflow-hidden"
         >
+          {/* Background decorative elements */}
           <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-[35rem] h-[35rem] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
           <motion.div
-            initial={{ scale: 0.9, y: 20, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.9, y: 20, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-2xl bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl flex flex-col max-h-[85vh]"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="relative w-full max-w-2xl bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-2xl flex flex-col max-h-[85vh] z-[101]"
           >
             <div 
               ref={scrollRef}
@@ -96,14 +114,9 @@ const DemoDisclaimer = ({ onAccept }) => {
               }}
             >
               <div className="text-center mb-8">
-                <motion.div
-                  initial={{ rotate: -10, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.3em] mb-4 uppercase border border-blue-500/20"
-                >
+                <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.3em] mb-4 uppercase border border-blue-500/20">
                   <FiInfo className="text-xs" /> Project Presentation
-                </motion.div>
+                </div>
                 <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
                   Demo of <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Aurakart Project</span>
                 </h1>
@@ -142,19 +155,14 @@ const DemoDisclaimer = ({ onAccept }) => {
                     <FiMessageSquare className="text-purple-400" size={20} />
                   </div>
                   <p className="text-gray-300 text-sm">
-                    <strong className="text-white">Feedback & Future Projects:</strong> I would love to hear your thoughts. Please share your feedback—what you liked or what could be improved. For real inquiries or future project discussions, you can contact me through the <span className="text-blue-400">“Get in touch using the options below”</span> section on the last page.
+                    <strong className="text-white">Feedback & Future Projects:</strong> I would love to hear your thoughts. Please share your feedback—what you liked or what could be improved. For real inquiries or future project discussions, you can contact me through the <span className="text-blue-400">“Get in touch”</span> section.
                   </p>
                 </div>
                 
-                {/* Visual hint to scroll */}
                 {isLocked && (
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="py-4 text-center text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] animate-bounce"
-                  >
+                  <div className="py-4 text-center text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] animate-bounce">
                     Scroll down to unlock entry
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </div>
@@ -163,25 +171,18 @@ const DemoDisclaimer = ({ onAccept }) => {
               <button
                 onClick={handleAccept}
                 disabled={isLocked}
-                className={`group relative px-12 py-4 font-black uppercase tracking-[0.2em] text-xs rounded-2xl transition-all duration-500 shadow-xl transform overflow-hidden w-full sm:w-auto text-center flex items-center justify-center gap-3 ${
+                className={`group relative px-12 py-4 font-black uppercase tracking-[0.2em] text-xs rounded-2xl transition-all duration-500 shadow-xl transform w-full sm:w-auto text-center flex items-center justify-center gap-3 ${
                   isLocked 
-                    ? 'bg-gray-800 text-gray-300 cursor-not-allowed opacity-70 border border-white/10 shadow-none' 
+                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-70 border border-white/10' 
                     : 'bg-white text-black hover:bg-blue-600 hover:text-white hover:-translate-y-1 shadow-white/5 hover:shadow-blue-600/40'
                 }`}
               >
                 <span className="relative z-10">
                   {isLocked ? 'Locked (Scroll to Unlock)' : 'Accept & Enter Website'}
                 </span>
-                <div className="relative z-10 flex items-center justify-center transition-all duration-300">
-                  {isLocked ? (
-                    <FiLock size={18} />
-                  ) : (
-                    <FiUnlock size={22} className="text-green-400 group-hover:text-white transition-colors" />
-                  )}
+                <div className="relative z-10 flex items-center justify-center">
+                  {isLocked ? <FiLock size={18} /> : <FiUnlock size={22} className="text-green-500" />}
                 </div>
-                {!isLocked && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                )}
               </button>
               
               <p className="mt-6 text-[10px] text-gray-600 font-black uppercase tracking-widest text-center">

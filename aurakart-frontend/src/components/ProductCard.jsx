@@ -110,7 +110,7 @@ const ProductCard = ({ product }) => {
       <button 
         onClick={handleWishlistClick}
         className={`absolute top-7 right-7 z-20 backdrop-blur-md p-2.5 rounded-full transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.2)] 
-          ${isWishlisted ? 'bg-white text-red-500 scale-110' : 'bg-white/20 text-white hover:bg-white/40'}
+          ${isWishlisted ? 'bg-white text-red-500 scale-110' : 'bg-white text-gray-900 hover:bg-gray-100'}
         `}
       >
         <FiHeart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />

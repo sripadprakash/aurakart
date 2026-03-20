@@ -3,17 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiMinus, FiPlus, FiTrash2, FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useLocation } from '../context/LocationContext';
 import toast from 'react-hot-toast';
 
 const CartDrawer = () => {
   const { isCartOpen, setIsCartOpen, cartItems, cartTotal, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user, triggerLoginForCheckout, addOrder } = useAuth();
+  const { location, setIsLocationModalOpen } = useLocation();
 
   const handleCheckoutClick = () => {
     if (!user) {
       setIsCartOpen(false);
       triggerLoginForCheckout();
       toast.error('Please sign in to complete your purchase');
+      return;
+    }
+
+    if (location === 'Select Location') {
+      toast.error('Please select a delivery address first');
+      setIsLocationModalOpen(true);
       return;
     }
 
